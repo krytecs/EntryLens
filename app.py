@@ -35,7 +35,7 @@ with st.sidebar:
     st.caption('CSV columns: date, adjusted_close. One row per observation. Use consistently adjusted prices.')
 if mode == 'Synthetic demonstration':
     asset, benchmark = demo()
-    st.warning('SYNTHETIC DEMO: invented prices, not actual assets or historical investment results.')
+    st.markdown('<div class="el-notice"><strong>SYNTHETIC DEMO</strong>Invented prices for exploring the interface. These are not actual assets or historical investment results.</div>', unsafe_allow_html=True)
 elif mode == 'Load tickers':
     if submitted:
         try:
