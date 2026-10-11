@@ -90,7 +90,7 @@ Historical frequencies are not forecasts. Results exclude taxes,
 transaction costs, and inflation adjustments.
 
 Summary arithmetic and window-date consistency were checked.
-Independent verification against the underlying prices remains pending.
+Selected-window CAGR and maximum drawdown calculations were independently recomputed from exported daily investment values and matched the dashboard results. Provider prices were not independently verified.
 
 Source: Yahoo Finance via yfinance, with auto_adjust=True.
 Data retrieved October 11, 2026.
