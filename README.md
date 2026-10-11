@@ -17,6 +17,14 @@ python -m streamlit run app.py
 
 Open the localhost address printed in the terminal. Stop with Control-C.
 
+## Ticker loading
+
+Choose **Load tickers**, enter an asset (default SPY) and an optional benchmark (default QQQ), select download dates, and click **Load market data**. Prices come from Yahoo Finance through yfinance, with `auto_adjust=True`. The end date is inclusive in the interface. Actual availability depends on the ticker and provider.
+
+Successful downloads are cached for one hour. Source metadata records requested and observed dates, adjustment mode, and retrieval timestamp. Form changes take effect only after successful submission. Provider outages, rate limits, and unavailable symbols produce an error rather than synthetic replacement data. CSV loading remains available.
+
+Review provider terms before sharing or redistributing market data. yfinance is an unofficial research interface; do not assume its data is licensed for a public hosted deployment.
+
 ## Data
 
 The default demo is explicitly **synthetic**, generated with seed 42. It is not a historical asset and cannot substantiate investment conclusions. Upload your own CSV with `date,adjusted_close`; for example:

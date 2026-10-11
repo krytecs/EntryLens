@@ -1,15 +1,32 @@
+import json
+from datetime import date
 import pandas as pd
 import streamlit as st
 import plotly.express as px
 from analysis import validate, cagr, windows, demo, path_metrics
+from market_data import fetch_prices
 from design import apply_design, polished, RED, WHITE
 
 st.set_page_config(page_title='EntryLens', page_icon='📈', layout='wide')
 apply_design()
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def cached_prices(symbol, start, end):
+    return fetch_prices(symbol, start, end)
+
+provenance = None
 with st.sidebar:
     st.markdown('### Experiment settings')
     st.caption('Choose your data. Explore your timing.')
-    mode = st.radio('Data source', ['Synthetic demonstration', 'Upload historical CSV'])
+    mode = st.radio('Data source', ['Synthetic demonstration', 'Load tickers', 'Upload historical CSV'])
+    if mode == 'Load tickers':
+        with st.form('ticker_loader'):
+            symbol = st.text_input('Asset ticker', 'SPY')
+            benchmark_symbol = st.text_input('Benchmark ticker (optional)', 'QQQ')
+            download_start = st.date_input('Download start', date(2000,1,1), max_value=date.today())
+            download_end = st.date_input('Download end', date.today(), max_value=date.today())
+            submitted = st.form_submit_button('Load market data', type='primary')
+        st.caption('Daily adjusted prices · Cached for one hour · Historical data, not a live quote feed.')
     years = st.select_slider('Holding period (years)', options=[1, 2, 3, 5, 7, 10], value=5)
     uploaded = st.file_uploader('Asset CSV', type='csv') if mode == 'Upload historical CSV' else None
     reference = st.file_uploader('Optional benchmark CSV', type='csv') if mode == 'Upload historical CSV' else None
@@ -19,6 +36,26 @@ with st.sidebar:
 if mode == 'Synthetic demonstration':
     asset, benchmark = demo()
     st.warning('SYNTHETIC DEMO: invented prices, not actual assets or historical investment results.')
+elif mode == 'Load tickers':
+    if submitted:
+        try:
+            with st.spinner('Loading market data…'):
+                loaded_asset, asset_meta = cached_prices(symbol.strip().upper(), download_start, download_end)
+                loaded_benchmark, benchmark_meta = (cached_prices(benchmark_symbol.strip().upper(), download_start, download_end)
+                    if benchmark_symbol.strip() else (None, None))
+            st.session_state['market_bundle'] = (loaded_asset, loaded_benchmark, asset_meta, benchmark_meta)
+        except (ValueError, ImportError) as exc:
+            st.error(str(exc))
+            st.info('No new dataset was loaded. Correct the inputs and submit again.'); st.stop()
+    if 'market_bundle' not in st.session_state:
+        st.info('Enter your tickers in the sidebar and click Load market data.'); st.stop()
+    asset, benchmark, asset_meta, benchmark_meta = st.session_state['market_bundle']
+    provenance = {'asset':asset_meta, 'benchmark':benchmark_meta}
+    st.caption(f"Loaded: {asset_meta['ticker']}" + (f" · Benchmark: {benchmark_meta['ticker']}" if benchmark_meta else '') + ' · Yahoo Finance via yfinance')
+    with st.expander('Data source and retrieval details'):
+        st.json(provenance)
+        st.download_button('Export source metadata', json.dumps(provenance, indent=2), 'entrylens-data-source.json', 'application/json')
+    st.caption('The displayed dataset changes only after a successful Load market data submission. Cached retrieval timestamps describe the original fetch.')
 else:
     if uploaded is None:
         st.info('Upload a CSV to begin. Switch to synthetic demonstration to explore the interface.')
@@ -59,7 +96,7 @@ with a:
     st.markdown('### Timing changes the story')
     st.caption('Each point represents a different entry date over the same holding period.')
     columns = ['cagr'] + (['benchmark_cagr'] if benchmark is not None else [])
-    chart = results.set_index('start')[columns].mul(100).rename(columns={'cagr':'Asset', 'benchmark_cagr':'Benchmark'})
+    chart = results.set_index('start')[columns].mul(100).rename(columns={'cagr':asset_meta['ticker'] if provenance else 'Asset', 'benchmark_cagr':benchmark_meta['ticker'] if provenance and benchmark_meta else 'Benchmark'})
     st.plotly_chart(polished(px.line(chart, color_discrete_sequence=[RED, WHITE], labels={'value':'CAGR (%)', 'start':'Entry date', 'variable':'Series'})), width='stretch')
     st.write(f'Historical range: **{results.cagr.min():.1%} to {results.cagr.max():.1%}**.')
     if benchmark is not None:
@@ -121,7 +158,7 @@ with e:
     st.write(f'**{frequency:.1%}** of eligible windows met or exceeded your **{target:.1f}% CAGR threshold**.')
     st.write(f'**{unrecovered:,}** windows ended before recovery from their deepest drawdown; **{recovered:,}** recovered within the window.')
     summary = f'''EntryLens research snapshot
-Data: {'SYNTHETIC DEMONSTRATION — not market evidence' if mode == 'Synthetic demonstration' else 'User-uploaded CSV — source must be documented separately'}
+Data: {'SYNTHETIC DEMONSTRATION — not market evidence' if mode == 'Synthetic demonstration' else json.dumps(provenance) if provenance else 'User-uploaded CSV — source must be documented separately'}
 Analysis period: {asset.index[0]:%Y-%m-%d} to {asset.index[-1]:%Y-%m-%d}
 Holding period: {years} calendar years
 Eligible overlapping windows: {len(results)}
