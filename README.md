@@ -4,6 +4,10 @@
 
 EntryLens is a Python/Streamlit research dashboard comparing headline CAGR with the distribution of historical entry-date outcomes. It includes matched benchmark comparisons, drawdowns, recovery status, a holding-period heatmap, and CSV exports. Also includes date-range controls, a starting-investment input, custom/best/worst entry paths, dollar-value and drawdown charts, CAGR threshold frequencies, percentile summaries, and downloadable research snapshots.
 
+## Live demo
+
+[Explore EntryLens](https://entrylens.streamlit.app/)
+
 ## Installation
 
 Open a terminal inside this folder and run:
