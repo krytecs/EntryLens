@@ -1,0 +1,14 @@
+UPDATE TO EntryLens
+
+Keep your existing project folder and Python environment. Do not delete them.
+1. Stop Streamlit with Control-C in its Terminal.
+2. Copy app.py, design.py, README.md, requirements.txt, and UPDATE.txt into your existing folder, replacing those files.
+3. Copy .streamlit/config.toml too. Command-Shift-period shows hidden folders in Finder.
+4. Keep analysis.py, tests, your data, and .venv312. The financial calculations are unchanged.
+5. In your existing Terminal with the environment active, run:
+   python -m streamlit run app.py --server.port 8502
+6. Refresh http://localhost:8502.
+
+Your local folder can keep its existing name. If you rename it, Python virtual environments may need to be recreated; keeping the folder avoids that issue.
+
+GitHub: rename the repository to entrylens in Settings, update its description, and replace the changed files at their existing paths. Add design.py and .streamlit/config.toml if missing. Rename your project board to EntryLens Development. Never upload virtual environments.
