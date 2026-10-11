@@ -68,29 +68,58 @@ These features are not implemented in the current version.
 
 ## Research findings: SPY versus QQQ
 
-Using Yahoo Finance adjusted daily prices, EntryLens evaluated
-5,478 overlapping five-year investment windows within the
-January 3, 2000–October 9, 2026 analysis period.
+EntryLens evaluated overlapping 1-, 3-, 5-, and 10-year
+investment windows using Yahoo Finance adjusted daily prices.
 
-| Five-year outcome | SPY | QQQ |
-|---|---:|---:|
-| Median CAGR | 11.31% | 15.53% |
-| Worst CAGR | -8.22% | -20.80% |
-| Best CAGR | 25.12% | 29.96% |
-| Windows ending in a loss | 11.15% | 10.13% |
+Analysis period: January 3, 2000–October 9, 2026.
+Data retrieved October 11, 2026 through yfinance with
+auto_adjust=True.
 
-QQQ had the higher CAGR in approximately 87.1% of matched windows.
-Its higher median CAGR was accompanied by a substantially worse
-minimum CAGR. Outcomes varied considerably with the entry date.
+### Compound growth and loss-ending windows
+
+| Holding period | Windows | SPY median CAGR | QQQ median CAGR | SPY loss-ending windows | QQQ loss-ending windows |
+|---|---:|---:|---:|---:|---:|
+| 1 year | 6,482 | 13.10% | 16.25% | 22.31% | 20.84% |
+| 3 years | 5,980 | 11.32% | 15.23% | 16.77% | 13.46% |
+| 5 years | 5,478 | 11.31% | 15.53% | 11.15% | 10.13% |
+| 10 years | 4,219 | 9.71% | 15.29% | 4.50% | 6.45% |
+
+### Range of outcomes
+
+| Holding period | SPY CAGR range | QQQ CAGR range | Windows where QQQ beat SPY |
+|---|---:|---:|---:|
+| 1 year | -47.38% to 77.57% | -69.41% to 90.52% | 66.46% |
+| 3 years | -17.35% to 29.09% | -40.67% to 41.88% | 80.57% |
+| 5 years | -8.22% to 25.12% | -20.80% to 29.96% | 87.06% |
+| 10 years | -1.89% to 17.49% | -8.34% to 23.47% | 92.53% |
+
+### Findings
+
+Longer holding periods had narrower CAGR ranges and fewer
+loss-ending windows in this dataset. However, longer holding
+periods did not eliminate losses or deep drawdowns.
+
+QQQ had higher median CAGR at every tested horizon. It also had
+a worse minimum CAGR at every horizon and a higher share of
+loss-ending windows over ten years.
+
+### Validation
+
+Exported summary statistics, benchmark differences, unique entry
+dates, and calendar-anniversary exit timing were checked.
+
+For SPY's worst-CAGR window at each horizon, both assets' CAGRs
+and SPY's maximum drawdown were independently recalculated from
+exported daily investment values and matched the dashboard.
 
 ### Limitations
 
-These windows overlap and are not independent observations.
+Windows overlap and are not independent observations.
+Different holding periods include different eligible entry dates,
+so comparisons across horizons are not fully matched.
+
 Historical frequencies are not forecasts. Results exclude taxes,
-transaction costs, and inflation adjustments.
+transaction costs, inflation, and intermediate cash flows.
+Drawdowns use daily observations and can miss intraday losses.
 
-Summary arithmetic and window-date consistency were checked.
-Selected-window CAGR and maximum drawdown calculations were independently recomputed from exported daily investment values and matched the dashboard results. Provider prices were not independently verified.
-
-Source: Yahoo Finance via yfinance, with auto_adjust=True.
-Data retrieved October 11, 2026.
+Provider prices were not independently verified.
