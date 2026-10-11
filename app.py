@@ -55,7 +55,7 @@ elif mode == 'Load tickers':
     with st.expander('Data source and retrieval details'):
         st.json(provenance)
         st.download_button('Export source metadata', json.dumps(provenance, indent=2), 'entrylens-data-source.json', 'application/json')
-    st.caption('The displayed dataset changes only after a successful Load market data submission. Cached retrieval timestamps describe the original fetch.')
+        st.caption('The displayed dataset changes only after a successful Load market data submission. Cached retrieval timestamps describe the original fetch.')
 else:
     if uploaded is None:
         st.info('Upload a CSV to begin. Switch to synthetic demonstration to explore the interface.')
@@ -70,7 +70,7 @@ if benchmark is not None:
     if len(common) < 2:
         st.error('Asset and benchmark need at least two shared dates.'); st.stop()
     asset, benchmark = common.iloc[:, 0], common.iloc[:, 1]
-    st.caption('Benchmark comparisons use shared observation dates only.')
+    # Matching uses shared dates; documented in Method and limitations.
 with st.sidebar:
     selected_range = st.date_input('Analysis date range', value=(asset.index[0].date(), asset.index[-1].date()), min_value=asset.index[0].date(), max_value=asset.index[-1].date())
 if len(selected_range) != 2:
@@ -94,7 +94,7 @@ st.caption(f'{asset.index[0]:%Y-%m-%d} to {asset.index[-1]:%Y-%m-%d}. Full-histo
 a,b,c,d,e = st.tabs(['Entry dates', 'Risk & recovery', 'Holding periods', 'Your investment', 'Research summary'])
 with a:
     st.markdown('### Timing changes the story')
-    st.caption('Each point represents a different entry date over the same holding period.')
+    st.caption('Rolling CAGR by entry date · Red: asset · White: benchmark')
     columns = ['cagr'] + (['benchmark_cagr'] if benchmark is not None else [])
     chart = results.set_index('start')[columns].mul(100).rename(columns={'cagr':asset_meta['ticker'] if provenance else 'Asset', 'benchmark_cagr':benchmark_meta['ticker'] if provenance and benchmark_meta else 'Benchmark'})
     st.plotly_chart(polished(px.line(chart, color_discrete_sequence=[RED, WHITE], labels={'value':'CAGR (%)', 'start':'Entry date', 'variable':'Series'})), width='stretch')
@@ -175,6 +175,7 @@ No flows, fees, taxes, or inflation adjustment. Overlapping windows are dependen
 
 with st.expander('Method and limitations'):
     st.write('CAGR = (ending price / starting price)^(365.2425 / elapsed calendar days) − 1. Each window ends on the first observation on or after its calendar anniversary, at most seven days later. No interpolation or forward filling.')
+    st.write('Benchmark comparisons use shared observation dates only.')
     st.write('No deposits, withdrawals, taxes, fees, inflation adjustment, or execution simulation. Adjusted-price results depend on the supplied data convention. Drawdowns use observed prices only. Overlapping windows are dependent observations, and historical fractions are not forecasts or independent probabilities.')
 st.download_button('Download window results', results.to_csv(index=False), 'entrylens-results.csv', 'text/csv')
 
