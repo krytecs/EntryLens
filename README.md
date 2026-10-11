@@ -65,3 +65,32 @@ Deploy with Streamlit Community Cloud using `app.py` as the entrypoint and `requ
 - Monthly-contribution analysis using XIRR.
 
 These features are not implemented in the current version.
+
+## Research findings: SPY versus QQQ
+
+Using Yahoo Finance adjusted daily prices, EntryLens evaluated
+5,478 overlapping five-year investment windows within the
+January 3, 2000–October 9, 2026 analysis period.
+
+| Five-year outcome | SPY | QQQ |
+|---|---:|---:|
+| Median CAGR | 11.31% | 15.53% |
+| Worst CAGR | -8.22% | -20.80% |
+| Best CAGR | 25.12% | 29.96% |
+| Windows ending in a loss | 11.15% | 10.13% |
+
+QQQ had the higher CAGR in approximately 87.1% of matched windows.
+Its higher median CAGR was accompanied by a substantially worse
+minimum CAGR. Outcomes varied considerably with the entry date.
+
+### Limitations
+
+These windows overlap and are not independent observations.
+Historical frequencies are not forecasts. Results exclude taxes,
+transaction costs, and inflation adjustments.
+
+Summary arithmetic and window-date consistency were checked.
+Independent verification against the underlying prices remains pending.
+
+Source: Yahoo Finance via yfinance, with auto_adjust=True.
+Data retrieved October 11, 2026.
