@@ -119,6 +119,7 @@ with c:
             grouped=table.groupby('entry_year').cagr.median().mul(100)
             parts.append(grouped.rename(horizon))
     matrix=pd.concat(parts,axis=1).T
+    matrix.index = matrix.index.map(lambda years: f"{years} years")
     st.plotly_chart(polished(px.imshow(matrix, aspect='auto', color_continuous_scale=['#ff354d','#1c1d25','#ffffff'], color_continuous_midpoint=0, labels={'x':'Entry year','y':'Holding years','color':'Median CAGR (%)'})), width='stretch')
     st.caption('Each cell is the median across eligible entry dates in that year. Blank cells lack completed windows; recent years can contain partial sets of eligible dates.')
 with d:
