@@ -9,7 +9,9 @@ def apply_design():
     st.markdown('''<style>
     .stApp, .stApp p, .stApp label, .stApp button, .stApp input {font-family:"Avenir Next", Avenir, "Segoe UI", sans-serif;}
     .stApp {background: #08090c; color:#f4f4f5;}
-    [data-testid="stHeader"] {background:#08090c;}
+    [data-testid="stHeader"] {background:#08090c; border-bottom:1px solid #252730;}
+    [data-testid="stHeader"]::after {content:"EntryLens"; position:absolute; left:64px; top:50%; transform:translateY(-50%); font-family:"Avenir Next",Avenir,"Segoe UI",sans-serif; font-size:19px; font-weight:700; letter-spacing:-.04em; color:#f4f4f5; border-left:3px solid #ff3049; padding-left:10px; pointer-events:none;}
+    @media(max-width:700px) {[data-testid="stHeader"]::after {left:48px; font-size:15px; padding-left:7px;}}
     [data-testid="stSidebar"] {background:#101116; border-right:1px solid #262830;}
     .block-container {max-width:1440px; padding-top:4.2rem; padding-bottom:3rem;}
     [data-testid="stSidebar"] label {font-size:13px;}
@@ -27,12 +29,6 @@ def apply_design():
     [data-testid="stPlotlyChart"] {border:1px solid #262830; border-radius:5px; overflow:hidden;}
     [data-testid="stExpander"] {border-radius:5px; border-color:#292b34;}
     [data-testid="stDownloadButton"] button {background:#ff3049; color:white; border:0; border-radius:4px; font-weight:600; padding:10px 20px;}
-    .el-topbar {position:fixed; top:0; left:0; right:0; height:56px; z-index:999990; background:#08090c; border-bottom:1px solid #252730; display:flex; align-items:center; padding:0 22px; pointer-events:none; box-sizing:border-box;}
-    .el-topbar .el-brand {margin:0; font-size:22px; gap:9px;}
-    .el-topbar .el-mark {padding:4px 8px; font-size:15px;}
-    .el-topbar .el-pill {font-size:9px;}
-    [data-testid="stSidebar"] > div:first-child {padding-top:56px;}
-    @media(max-width:700px) {.el-topbar {padding-left:50px;} .el-topbar .el-pill {display:none;} }
     .el-brand {display:flex; align-items:center; gap:10px; font-size:24px; font-weight:700; letter-spacing:-.055em; margin-bottom:8px;}
     .el-mark {background:#ff3049; color:white; border-radius:4px; padding:7px 10px; font-size:18px;}
     .el-pill {font-size:10px; color:#ff7d8b; background:#291219; border:1px solid #5c2230; padding:5px 9px; border-radius:3px; letter-spacing:.13em; margin-left:8px;}
@@ -46,7 +42,7 @@ def apply_design():
     .el-footer {margin-top:30px; border-top:1px solid #252730; padding-top:18px; color:#9194a5; font-size:12px;}
     @media(max-width:700px) {.block-container{padding:4.2rem 1rem 2rem;} .el-hero h1{font-size:27px;} }
     </style>''', unsafe_allow_html=True)
-    st.markdown('''<div class="el-topbar"><div class="el-brand"><span class="el-mark">↗</span> EntryLens <span class="el-pill">RESEARCH STUDIO</span></div></div>
+    st.markdown('''<div class="el-brand"><span class="el-mark">↗</span> EntryLens <span class="el-pill">RESEARCH STUDIO</span></div>
     <div class="el-hero"><div class="el-eyebrow">TIMING / GROWTH / RISK</div>
     <h1>Your entry point. <span>A different perspective.</span></h1>
     <p>A headline return tells one story. Explore how timing changes compound growth, drawdowns, and the road to recovery.</p></div>''', unsafe_allow_html=True)
